@@ -18,9 +18,9 @@ func main() {
 	}
 	defer db.Close()
 
-	controller := internal.NewController(internal.NewInteractor(internal.NewRepository(db), internal.NewPresenter()))
+	appController := internal.NewAppController(db)
 	e := echo.New()
-	e = internal.NewRouter(e, controller)
+	e = internal.NewRouter(e, appController)
 
 	e.Logger.Fatal(e.Start(cfg.Server.Port))
 }

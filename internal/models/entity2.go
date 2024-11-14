@@ -1,6 +1,6 @@
-package model
+package models
 
-type Entity struct {
+type Entity2 struct {
 	ID   string `json:"id" firestore:"-"`
 	Name string `json:"name" firestore:"name"`
 

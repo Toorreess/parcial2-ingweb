@@ -1,8 +1,8 @@
-package internal
+package entity1
 
 import (
 	"net/http"
-	"parcial2-ingweb/internal/model"
+	"parcial2-ingweb/internal/models"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -10,7 +10,7 @@ import (
 
 type Context echo.Context
 
-type IController interface {
+type IE1Controller interface {
 	Create(c Context) error
 	Get(c Context) error
 	Update(c Context, body map[string]interface{}) error
@@ -19,22 +19,22 @@ type IController interface {
 	List(c Context) error
 }
 
-type controller struct {
-	Interactor IInteractor
+type e1Controller struct {
+	e1Interactor IE1Interactor
 }
 
-func NewController(i IInteractor) IController {
-	return &controller{i}
+func NewE1Controller(i IE1Interactor) IE1Controller {
+	return &e1Controller{i}
 }
 
-func (ctr *controller) Create(c Context) error {
-	var entity *model.Entity
+func (ec *e1Controller) Create(c Context) error {
+	var entity *models.Entity1
 
 	if err := c.Bind(&entity); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, map[string]string{"status": "Not valid body"})
 	}
 
-	entity, err := ctr.Interactor.Create(entity)
+	entity, err := ec.e1Interactor.Create(entity)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, map[string]string{"status": "Not valid body"})
 	}
@@ -42,10 +42,10 @@ func (ctr *controller) Create(c Context) error {
 	return c.JSON(http.StatusCreated, entity)
 }
 
-func (ctr *controller) Get(c Context) error {
-	var entity *model.Entity
+func (ec *e1Controller) Get(c Context) error {
+	var entity *models.Entity1
 
-	entity, err := ctr.Interactor.Get(c.Param("id"))
+	entity, err := ec.e1Interactor.Get(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, map[string]string{"status": "Not found"})
 	}
@@ -53,10 +53,10 @@ func (ctr *controller) Get(c Context) error {
 	return c.JSON(http.StatusOK, entity)
 }
 
-func (ctr *controller) Update(c Context, body map[string]interface{}) error {
-	var entity *model.Entity
+func (ec *e1Controller) Update(c Context, body map[string]interface{}) error {
+	var entity *models.Entity1
 
-	entity, err := ctr.Interactor.Update(c.Param("id"), body)
+	entity, err := ec.e1Interactor.Update(c.Param("id"), body)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, map[string]string{"status": "Not found"})
 	}
@@ -64,8 +64,8 @@ func (ctr *controller) Update(c Context, body map[string]interface{}) error {
 	return c.JSON(http.StatusOK, entity)
 }
 
-func (ctr *controller) Delete(c Context) error {
-	err := ctr.Interactor.Delete(c.Param("id"))
+func (ec *e1Controller) Delete(c Context) error {
+	err := ec.e1Interactor.Delete(c.Param("id"))
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, map[string]string{"status": "Not found"})
@@ -74,7 +74,7 @@ func (ctr *controller) Delete(c Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func (ctr *controller) List(c Context) error {
+func (ec *e1Controller) List(c Context) error {
 	query := c.QueryParams()
 
 	q := make(map[string]string)
@@ -104,7 +104,7 @@ func (ctr *controller) List(c Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]string{"status": "Offset must be a number"})
 	}
 
-	list, err := ctr.Interactor.List(q, limit, offset, query.Get("orderBy"), query.Get("order"))
+	list, err := ec.e1Interactor.List(q, limit, offset, query.Get("orderBy"), query.Get("order"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, map[string]string{"status": "Not found"})
 	}
